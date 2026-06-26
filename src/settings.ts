@@ -25,10 +25,16 @@ function load(): Settings {
 export function getSettings(): Settings { return current; }
 
 export function updateSettings(patch: Partial<Settings>): Settings {
+  // The /settings form is write-only for apiKey (it never echoes the stored value),
+  // so an empty-string submission means "keep what you have". An explicit null or
+  // a literal "default" clears it back to the default. This pairs with the form's
+  // "leave blank to keep" placeholder to make accidental clears impossible.
+  const apiKeyPatch = patch.apiKey == null ? undefined : patch.apiKey.trim();
+  const newApiKey = apiKeyPatch === undefined || apiKeyPatch === '' ? current.apiKey : apiKeyPatch;
   current = {
     baseUrl: (patch.baseUrl ?? current.baseUrl).trim() || DEFAULTS.baseUrl,
     model: (patch.model ?? current.model).trim() || DEFAULTS.model,
-    apiKey: (patch.apiKey ?? current.apiKey).trim() || DEFAULTS.apiKey,
+    apiKey: newApiKey || DEFAULTS.apiKey,
     thinking: patch.thinking ?? current.thinking,
   };
   setSetting('config', JSON.stringify(current));

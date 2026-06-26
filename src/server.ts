@@ -2,7 +2,7 @@
 import Fastify from 'fastify';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
-import { PORT, PAGE_TOKENS_FAST, PAGE_TOKENS_THINK, SERP_TOKENS, GEN_TIMEOUT_FAST, GEN_TIMEOUT_THINK } from './config';
+import { PORT, HOST, PAGE_TOKENS_FAST, PAGE_TOKENS_THINK, SERP_TOKENS, GEN_TIMEOUT_FAST, GEN_TIMEOUT_THINK } from './config';
 import { canonicalizeUrl, pageKey, queryKey, seedFor } from './urlkey';
 import { getPage, putPage, getSerp, putSerp, worldStats } from './cache';
 import { streamChat, pingModel } from './llm';
@@ -52,13 +52,21 @@ app.get('/view', async (req, reply) => {
 });
 
 // ---- raw page body (served same-origin into the iframe) -------------------
+// CSP locks the iframe down even if the model emits something rewriteHtml missed:
+// no scripts, no remote resources, only inline styles and data:-URI images allowed.
+const RAW_CSP = "default-src 'none'; style-src 'unsafe-inline'; img-src data:; frame-ancestors 'self'; form-action 'self'";
 app.get('/raw', async (req, reply) => {
   const rawUrl = String((req.query as any).url || '').trim();
   if (!rawUrl) return reply.code(400).type('text/html').send(renderErrorBody('No URL was specified.'));
   const canon = canonicalizeUrl(rawUrl);
   const rec = getPage(pageKey(canon));
   if (!rec) return reply.code(404).type('text/html').send(renderErrorBody('This page has not been generated yet.'));
-  reply.type('text/html').send(rec.html);
+  reply
+    .header('Content-Security-Policy', RAW_CSP)
+    .header('X-Frame-Options', 'SAMEORIGIN')
+    .header('Referrer-Policy', 'no-referrer')
+    .type('text/html')
+    .send(rec.html);
 });
 
 // ---- health ---------------------------------------------------------------
@@ -245,11 +253,17 @@ app.get('/stream/search', async (req, reply) => {
 });
 
 // ---- boot -----------------------------------------------------------------
-const server = await app.listen({ port: PORT, host: '0.0.0.0' });
+const server = await app.listen({ port: PORT, host: HOST });
 const status = await pingModel();
 const cfg = getSettings();
-console.log(`\n  🌐  LLM-as-Internet running at ${server}`);
+console.log(`\n  🍀  virtual-4chan running at ${server}`);
 console.log(`      endpoint: ${cfg.baseUrl}`);
 console.log(`      model:    ${cfg.model} — ${status.ok ? 'ready' : 'NOT READY: ' + status.detail}`);
 console.log(`      thinking: ${cfg.thinking ? 'ON (world-model reasoning; higher fidelity, slower)' : 'off (fast)'}  ·  change at ${server}/settings`);
-console.log(`      world:    ${JSON.stringify(worldStats())}\n`);
+console.log(`      world:    ${JSON.stringify(worldStats())}`);
+if (HOST === '0.0.0.0' || HOST === '::') {
+  console.log(`\n  ⚠  HOST=${HOST} — /settings has no auth and can rewrite the LLM endpoint & API key.`);
+  console.log(`     Anyone on your network can exfiltrate your key. Use HOST=127.0.0.1 unless you understand the risk.\n`);
+} else {
+  console.log('');
+}

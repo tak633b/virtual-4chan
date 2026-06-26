@@ -82,6 +82,25 @@ export function rewriteHtml(raw: string, baseUrl: string): Rewritten {
     if (rel.includes('stylesheet') || rel.includes('icon') || rel.includes('preload')) l.remove();
   }
 
+  // 5) Strip every inline event handler (on*) and executable URL schemes on
+  //    every attribute the browser will fetch. The iframe sandbox in renderPage
+  //    omits allow-scripts, but /raw served directly to a non-sandboxed tab
+  //    would otherwise execute these. CSP at the /raw response is the other
+  //    half of this defense.
+  //    Note: img src is set to a data:image/svg+xml placeholder in step 3 above,
+  //    so we only strip the actually-dangerous schemes here — not all data: URIs.
+  const EXEC_URL = /^(javascript:|vbscript:|data:text\/html|data:application\/(xml|xhtml))/i;
+  const URL_ATTRS = ['src', 'srcdoc', 'action', 'formaction', 'background', 'poster', 'data', 'xlink:href'];
+  for (const el of root.querySelectorAll('*')) {
+    for (const name of Object.keys(el.attributes || {})) {
+      if (/^on/i.test(name)) el.removeAttribute(name);
+    }
+    for (const attr of URL_ATTRS) {
+      const v = el.getAttribute(attr);
+      if (v && EXEC_URL.test(v.trim())) el.removeAttribute(attr);
+    }
+  }
+
   const title = (root.querySelector('title')?.text || '').trim() || 'Untitled';
   return { body: root.toString(), title, outlinks };
 }

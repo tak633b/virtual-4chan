@@ -218,8 +218,8 @@ export function renderSettings(
         <input name="model" id="f-model" value="${esc(cur.model)}" spellcheck="false" placeholder="${esc(def.model)}">
       </label>
 
-      <label>API key <span>ignored by local servers; required by hosted providers</span>
-        <input name="apiKey" id="f-apiKey" type="password" value="${esc(cur.apiKey)}" spellcheck="false" placeholder="lm-studio">
+      <label>API key <span>ignored by local servers; required by hosted providers — write-only, never echoed back</span>
+        <input name="apiKey" id="f-apiKey" type="password" value="" spellcheck="false" placeholder="${cur.apiKey && cur.apiKey !== def.apiKey ? '••••••• (set — leave blank to keep)' : esc(def.apiKey)}" autocomplete="off">
       </label>
 
       <label class="check">
@@ -257,7 +257,7 @@ export function renderSettings(
       });
     })();
   </script>`;
-  return shell({ title: 'Settings — LLMnet', address: '', content, boot: { mode: 'settings', cached: true } });
+  return shell({ title: 'Settings — virtual-4chan', address: '', content, boot: { mode: 'settings', cached: true } });
 }
 
 function overlay(): string {

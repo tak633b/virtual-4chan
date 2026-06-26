@@ -15,6 +15,10 @@ if (existsSync('.env')) {
 export const LM_BASE_URL = process.env.LM_BASE_URL || 'http://127.0.0.1:1234/v1';
 export const MODEL = process.env.MODEL || 'qwen-agentworld-35b-a3b-oq4-mlx';
 export const PORT = Number(process.env.PORT || 3000);
+// Default to loopback only. /settings has no auth and can rewrite the LLM
+// endpoint + API key, so binding 0.0.0.0 lets anyone on your LAN exfiltrate
+// your key. Set HOST=0.0.0.0 explicitly when you understand the tradeoff.
+export const HOST = process.env.HOST || '127.0.0.1';
 export const DB_PATH = process.env.DB_PATH || './world.db';
 
 // The model's knowledge cutoff — anchors the simulated web to a believable era.
