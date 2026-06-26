@@ -1,0 +1,8 @@
+node_modules/
+world.db
+world.db-*
+*.log
+.env
+.DS_Store
+dist/
+.claude-flow/

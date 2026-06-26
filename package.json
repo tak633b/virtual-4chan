@@ -1,0 +1,21 @@
+{
+  "name": "virtual-4chan",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "description": "A 4chan-shaped anonymous imageboard hallucinated on the fly by a local language world model. Click a board, the model writes the catalog; click a thread, it writes the posts; click any link in any thread, it writes the next page. Pages persist in SQLite. Fork of hanxiao/qwen-agentworld-35b-a3b-web-simulator.",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fastify": "^5.8.5",
+    "node-html-parser": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,133 @@
+/* ---- reset / base -------------------------------------------------------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  display: flex; flex-direction: column;
+  background: #f5f6f8; color: #202124;
+}
+
+/* ---- browser chrome ------------------------------------------------------ */
+#chrome {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: #dfe1e5;
+  border-bottom: 1px solid #c5c8cc; flex: 0 0 auto;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+.nav { display: flex; gap: 2px; }
+.navbtn {
+  width: 32px; height: 32px; border: 0; border-radius: 50%;
+  background: transparent; color: #444; font-size: 18px; cursor: pointer; line-height: 1;
+}
+.navbtn:hover { background: #cdd0d4; }
+#omnibox { flex: 1; display: flex; align-items: center; gap: 8px;
+  background: #fff; border-radius: 18px; padding: 0 14px; height: 36px;
+  border: 1px solid transparent; box-shadow: inset 0 0 0 1px #d7dade; }
+#omnibox:focus-within { box-shadow: inset 0 0 0 2px #4285f4; }
+.lock { font-size: 12px; opacity: .55; }
+#address { flex: 1; border: 0; outline: 0; font-size: 14px; background: transparent; color: #202124; }
+.brand { font-weight: 600; color: #5f6368; font-size: 13px; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+.brand-model { font-weight: 500; font-size: 11px; color: #1a73e8; background: #e8f0fe;
+  border: 1px solid #d2e3fc; border-radius: 10px; padding: 2px 8px; font-family: ui-monospace, Menlo, monospace;
+  max-width: 230px; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- viewport ------------------------------------------------------------ */
+#viewport { flex: 1 1 auto; position: relative; overflow: auto; background: #fff; }
+#page-frame { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+
+/* ---- home ---------------------------------------------------------------- */
+.home { max-width: 600px; margin: 0 auto; padding: 14vh 20px 0; text-align: center; }
+.wordmark { font-size: 76px; font-weight: 700; letter-spacing: -2px; }
+.tagline { color: #5f6368; margin: 4px 0 28px; }
+.homebox, .examples { margin: 0 auto; }
+.homebox { display: flex; align-items: center; gap: 10px; max-width: 520px;
+  border: 1px solid #dadce0; border-radius: 24px; padding: 12px 18px; font-size: 16px;
+  box-shadow: 0 1px 6px rgba(32,33,36,.12); }
+.homebox:focus-within { box-shadow: 0 1px 10px rgba(32,33,36,.2); border-color: transparent; }
+.homebox input { flex: 1; border: 0; outline: 0; font-size: 16px; }
+.examples { margin-top: 22px; color: #5f6368; font-size: 13px; line-height: 2; }
+.examples a { color: #1a73e8; text-decoration: none; }
+.examples a:hover { text-decoration: underline; }
+.modelpill { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 26px;
+  padding: 7px 16px; border-radius: 20px; font-size: 13px; color: #3c4043;
+  background: linear-gradient(90deg, #e8f0fe, #fce8f3); border: 1px solid #e0e3e8; }
+.modelpill code { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #1a0dab; font-weight: 600; }
+.worldstat { margin-top: 34px; color: #80868b; font-size: 12px; }
+
+/* ---- SERP (our own Google-ish markup) ------------------------------------ */
+.serp-wrap { max-width: 680px; margin: 0; padding: 22px 28px 60px; }
+.g-stats { color: #70757a; font-size: 13px; margin-bottom: 18px; }
+.g-result { margin-bottom: 26px; }
+.g-crumb { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+.g-domain { color: #202124; font-weight: 500; }
+.g-crumb cite { color: #4d5156; font-style: normal; font-size: 12px; }
+.g-title { text-decoration: none; }
+.g-title h3 { color: #1a0dab; font-size: 20px; font-weight: 400; margin: 2px 0 3px; line-height: 1.3; }
+.g-title:hover h3 { text-decoration: underline; }
+.g-snippet { color: #4d5156; font-size: 14px; line-height: 1.58; }
+.g-snippet b { color: #202124; }
+.g-related { margin-top: 36px; }
+.g-related h4 { font-size: 18px; font-weight: 400; color: #202124; margin: 0 0 12px; }
+.g-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.g-chip { background: #f1f3f4; border-radius: 18px; padding: 8px 16px; color: #202124;
+  text-decoration: none; font-size: 14px; }
+.g-chip:hover { background: #e3e6e8; }
+
+/* ---- loading overlay ----------------------------------------------------- */
+#overlay { position: absolute; inset: 0; background: rgba(255,255,255,.96);
+  display: flex; align-items: center; justify-content: center; z-index: 10; }
+#overlay[hidden] { display: none; }
+.loadcard { width: min(620px, 88%); text-align: center; }
+.spinner { width: 34px; height: 34px; margin: 0 auto 18px; border-radius: 50%;
+  border: 3px solid #e3e6e8; border-top-color: #4285f4; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.status { font-size: 15px; color: #3c4043; margin-bottom: 14px; min-height: 20px; }
+.bar { height: 4px; background: #e3e6e8; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; width: 4%; background: linear-gradient(90deg,#4285f4,#34a853); transition: width .3s ease; }
+.source { text-align: left; margin: 18px 0 0; max-height: 230px; overflow: hidden; padding: 12px 14px;
+  background: #1e1e1e; color: #9cdcfe; font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  border-radius: 8px; white-space: pre-wrap; word-break: break-all; opacity: .92; }
+.source:empty { display: none; }
+.hint { color: #80868b; font-size: 12px; margin-top: 12px; }
+
+/* ---- skeletons ----------------------------------------------------------- */
+.sk-serp { max-width: 680px; padding: 22px 28px; }
+.sk-result { margin-bottom: 28px; }
+.sk-line { height: 12px; border-radius: 4px; margin: 8px 0;
+  background: linear-gradient(90deg,#eceff1 25%,#f5f7f9 37%,#eceff1 63%);
+  background-size: 400% 100%; animation: shimmer 1.4s ease infinite; }
+.sk-crumb { width: 180px; height: 10px; }
+.sk-title { width: 60%; height: 18px; }
+.sk-line.short { width: 40%; }
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+/* ---- settings page + gear ------------------------------------------------ */
+.gear { text-decoration: none; font-size: 17px; line-height: 32px; text-align: center; color: #444; }
+.settings { max-width: 640px; margin: 0 auto; padding: 40px 24px 80px; }
+.settings h1 { font-size: 28px; font-weight: 500; margin: 0 0 6px; }
+.settings .sub { color: #5f6368; margin: 0 0 22px; line-height: 1.5; }
+.settings code { background: #f1f3f4; padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+.status-line { font-size: 13px; padding: 10px 14px; border-radius: 8px; margin-bottom: 24px;
+  background: #f1f3f4; color: #5f6368; }
+.status-line.ok { background: #e6f4ea; color: #137333; }
+.status-line.bad { background: #fce8e6; color: #c5221f; }
+.settings label { display: block; margin-bottom: 18px; font-weight: 500; font-size: 14px; color: #202124; }
+.settings label span { display: block; font-weight: 400; font-size: 12px; color: #80868b; margin-top: 2px; }
+.settings input[type=text], .settings input:not([type]), .settings input[type=password] {
+  width: 100%; margin-top: 8px; padding: 10px 12px; font-size: 14px; border: 1px solid #dadce0;
+  border-radius: 8px; outline: 0; font-family: ui-monospace, Menlo, monospace; }
+.settings input:focus { border-color: #4285f4; box-shadow: 0 0 0 2px #e8f0fe; }
+.presets { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 20px; }
+.preset { font-size: 12px; padding: 5px 12px; border: 1px solid #dadce0; border-radius: 16px;
+  background: #fff; color: #1a73e8; cursor: pointer; }
+.preset:hover { background: #f1f3f4; }
+.settings label.check { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; }
+.settings label.check input { margin-top: 3px; }
+.settings label.check small { display: block; font-weight: 400; color: #80868b; font-size: 12px; margin-top: 2px; }
+.actions { display: flex; align-items: center; gap: 10px; margin-top: 26px; }
+.actions button { padding: 9px 18px; border-radius: 8px; border: 1px solid #dadce0; background: #fff;
+  font-size: 14px; cursor: pointer; }
+.actions button.primary { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+.actions button.primary:hover { background: #1666cc; }
+.actions button.ghost { border: 0; color: #5f6368; }
+.actions .saved { color: #137333; font-size: 13px; }
