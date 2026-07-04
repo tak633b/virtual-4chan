@@ -76,7 +76,17 @@ app.get('/health', async () => ({ model: await pingModel(), world: worldStats() 
 app.get('/settings', async (_req, reply) => {
   reply.type('text/html').send(renderSettings(getSettings(), defaultSettings(), await pingModel()));
 });
+// Reject cross-origin writes: /settings can repoint the LLM endpoint (and thus
+// exfiltrate the stored API key). Same-origin requests carry no Origin header or
+// one matching Host; a forged cross-site POST carries a foreign Origin.
+function sameOrigin(req: any): boolean {
+  const origin = req.headers.origin;
+  if (!origin) return true;
+  try { return new URL(origin).host === req.headers.host; } catch { return false; }
+}
+
 app.post('/settings', async (req, reply) => {
+  if (!sameOrigin(req)) return reply.code(403).send({ ok: false, error: 'cross-origin request rejected' });
   const b = (req.body || {}) as Record<string, unknown>;
   const next = updateSettings({
     baseUrl: typeof b.baseUrl === 'string' ? b.baseUrl : undefined,
