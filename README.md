@@ -7,7 +7,7 @@
 ![virtual-4chan home](docs/01-home.png)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Node 20+](https://img.shields.io/badge/node-%E2%89%A520-success.svg)](https://nodejs.org/)
+[![Node 22.13+](https://img.shields.io/badge/node-%E2%89%A522.13-success.svg)](https://nodejs.org/)
 [![Model: Qwen-AgentWorld](https://img.shields.io/badge/model-Qwen--AgentWorld--35B--A3B-blue.svg)](https://arxiv.org/abs/2606.24597)
 
 ---
@@ -89,7 +89,7 @@ We just have to point it at the URL we want and render its prediction.
 
 ### Prerequisites
 
-- **Node 20+**
+- **Node 22.13+** (needed for unflagged `node:sqlite`)
 - **An OpenAI-compatible chat endpoint serving the model.** Easiest path: [LM Studio](https://lmstudio.ai) → search *"agentworld"* in the model browser → download `qwen-agentworld-35b-a3b` (4-bit: ~20 GB VRAM is enough) → enable the local server.
 
 ### Install
